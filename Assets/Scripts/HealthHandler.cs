@@ -78,4 +78,9 @@ public class HealthHandler : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public int GetCurrentHealth()
+    {
+        return _currentHealth;
+    }
+
 }
