@@ -2,8 +2,16 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("References")]
     public Rigidbody2D playerRigidbody2D;
+    public AudioSource ShootAudioSource;
+    public GameObject BulletObject;
+    public GameObject[] GunHolders;
+
+    [Header("Settings")]
     public float MoveSpeed = 100;
+    public int NumberOfGuns = 2;
+
     private float _hAxis, _vAxis;
     private float _hMove, _vMove;
 
@@ -12,6 +20,11 @@ public class Player : MonoBehaviour
     {
         _hAxis = Input.GetAxisRaw("Horizontal");
         _vAxis = Input.GetAxisRaw("Vertical");
+
+        if(Input.GetButtonUp("Fire1"))
+        {
+            Shoot();
+        }
     }
 
     void FixedUpdate()
@@ -26,5 +39,19 @@ public class Player : MonoBehaviour
         {
             playerRigidbody2D.velocity = new Vector2(0f, 0f);
         }
+    }
+
+    void Shoot()
+    {
+        for(int i = 0; i < NumberOfGuns; i++)
+        {
+            if (i < GunHolders.Length)
+            {
+                GameObject.Instantiate(BulletObject, GunHolders[i].transform.position, BulletObject.transform.rotation, null);
+            }
+        }
+
+        ShootAudioSource.Play();
+        Debug.Log("Sparo supersonico!!!");
     }
 }

@@ -4,6 +4,8 @@ public class HealthHandler : MonoBehaviour
 {
     [Header("References")]
     public SpriteRenderer InvincibilityRenderer;
+    public GameObject ExplosionObject;
+    public Animator ShipAnimator;
 
     [Header("Settings")]
     public int MaxHealth = 3;
@@ -11,9 +13,12 @@ public class HealthHandler : MonoBehaviour
 
     private int _currentHealth;
     private float _invincibilityTimer;
+    private bool _isPlayer;
 
     void Start()
     {
+        _isPlayer = gameObject.CompareTag("Player");
+
         _currentHealth = MaxHealth;
 
         if (InvincibilityRenderer != null)
@@ -32,12 +37,19 @@ public class HealthHandler : MonoBehaviour
         }
 
         HandleInvincibility();
+    }
 
-        /////
-        // TEST - Hit
-        if (Input.GetKeyUp(KeyCode.H))
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Bullet"))
         {
             Hit();
+            Destroy(collision.gameObject);
+        }
+        else if(collision.CompareTag("Enemy"))
+        {
+            Hit();
+            collision.GetComponent<HealthHandler>().Die();
         }
     }
 
@@ -65,6 +77,11 @@ public class HealthHandler : MonoBehaviour
     {
         if (_invincibilityTimer <= 0)
         {
+            if(ShipAnimator != null)
+            {
+                ShipAnimator.SetTrigger("IsHit");
+            }
+
             // L'invincibilità non è attiva
             _currentHealth--;
             Debug.Log("Sono stato colpito: " + _currentHealth);
@@ -72,10 +89,24 @@ public class HealthHandler : MonoBehaviour
         }
     }
 
-    void Die()
+    public void Die()
     {
-        Debug.Log("Sono Morto!");
-        Destroy(gameObject);
+        // Creiamo un'esplosione
+        GameObject explosionObject = GameObject.Instantiate(ExplosionObject, transform.position, ExplosionObject.transform.rotation, null);
+        Destroy(explosionObject, explosionObject.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length);
+
+        if (_isPlayer)
+        {
+            // RICARICA LIVELLO
+            Destroy(gameObject);
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+
+        }
+        else
+        {
+            // Distruggiamo la nave
+            Destroy(gameObject);
+        }
     }
 
     public int GetCurrentHealth()
