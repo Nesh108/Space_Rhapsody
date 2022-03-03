@@ -2039,7 +2039,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyObject: {fileID: 1610189781559999526, guid: 71321c56b09c44597a39676918b247d8, type: 3}
-  SpawnDelay: 1
+  SpawnDelay: 2.5
   SpawnRange: {x: -7, y: 7}
 --- !u!4 &2080578429
 Transform:
