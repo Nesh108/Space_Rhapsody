@@ -114,4 +114,15 @@ public class HealthHandler : MonoBehaviour
         return _currentHealth;
     }
 
+    public void DEBUG_ToggleInvincibility()
+    {
+        if(_invincibilityTimer > 0)
+        {
+            _invincibilityTimer = 0f;
+        }
+        else
+        {
+            _invincibilityTimer = float.MaxValue;
+        }
+    }
 }
